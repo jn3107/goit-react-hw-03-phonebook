@@ -6,16 +6,28 @@ import { SectionSubtitle } from "./sectionSubtitle/SectionSubtitle";
 import { SectionTitle } from "./sectionTitle/SectionTitle";
 import { nanoid } from 'nanoid';
 import css from "./App.module.css";
-import contactNumbers from '../data/contacts.json';
 import { NotificationContainer } from 'react-notifications';
 import { NotificationManager } from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 
 export class App extends Component {
   state = {
-    contacts: [...contactNumbers],
+    contacts: [],
     filter: "",
   };
+  
+  componentDidMount() {
+    const newContact = localStorage.getItem("contacts");
+    const parseContacts = JSON.parse(newContact);
+    if (parseContacts) {
+      this.setState({ contacts: parseContacts });
+    }
+  }
+
+  componentDidUpdate(prevState) {
+    if (this.state.contacts !== prevState.contacts)
+      localStorage.setItem("contacts", JSON.stringify(this.state.contacts));
+  }
 
   createNewContact = data => {
     const { contacts } = this.state;
